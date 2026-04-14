@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.auth_routes import router as auth_router
+from app.api.client_routes import router as client_router
 from app.api.user_routes import router as user_router
 from app.db.init_db import create_db_and_tables
 
@@ -15,6 +16,7 @@ def on_startup():
 
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(client_router)
 
 
 @app.get('/')

@@ -15,7 +15,7 @@ def verify_password(plain_password: str, password_hash: str) -> bool:
     return pwd_context.verify(plain_password, password_hash)
 
 def create_access_token(subject: str) -> str:
-    expires_delta = timedelta(minutes=settings.ACESS_TOKEN_EXPIRE_MIUTES)
+    expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(timezone.utc) + expires_delta
 
     payload = {
