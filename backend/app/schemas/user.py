@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from pydantic import EmailStr
-from sqlmodel import SQLModel
+from sqlmodel import Field, SQLModel
 
 
 class UserCreate(SQLModel):
-    full_name: str
+    full_name: str = Field(max_length=255)
     email: EmailStr
-    password: str
+    password: str = Field(min_length=6, max_length=72)
 
 
 class UserResponse(SQLModel):

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
+from app.core.dependencies import get_current_user
 from app.core.security import get_password_hash
 from app.db.session import get_session
 from app.models.user import User
@@ -31,3 +32,8 @@ def create_user(user_data: UserCreate, session: Session = Depends(get_session)):
     session.refresh(user)
 
     return user
+
+
+@router.get('/me', response_model=UserResponse)
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
