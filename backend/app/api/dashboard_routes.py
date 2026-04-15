@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from datetime import date
+
+from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session, select
 
 from app.core.dependencies import get_current_user
@@ -15,26 +17,38 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 @router.get("/summary", response_model=DashboardSummary)
 def get_dashboard_summary(
+    start_date: date | None = Query(default=None),
+    end_date: date | None = Query(default=None),
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    paid_records = session.exec(
-        select(ServiceRecord).where(
-            ServiceRecord.user_id == current_user.id,
-            ServiceRecord.payment_status == "pago",
-        )
-    ).all()
+    paid_statement = select(ServiceRecord).where(
+        ServiceRecord.user_id == current_user.id,
+        ServiceRecord.payment_status == "pago",
+    )
 
-    pending_records = session.exec(
-        select(ServiceRecord).where(
-            ServiceRecord.user_id == current_user.id,
-            ServiceRecord.payment_status == "pendente",
-        )
-    ).all()
+    pending_statement = select(ServiceRecord).where(
+        ServiceRecord.user_id == current_user.id,
+        ServiceRecord.payment_status == "pendente",
+    )
 
-    expenses = session.exec(
-        select(Expense).where(Expense.user_id == current_user.id)
-    ).all()
+    expense_statement = select(Expense).where(
+        Expense.user_id == current_user.id
+    )
+
+    if start_date:
+        paid_statement = paid_statement.where(ServiceRecord.service_date >= start_date)
+        pending_statement = pending_statement.where(ServiceRecord.service_date >= start_date)
+        expense_statement = expense_statement.where(Expense.expense_date >= start_date)
+
+    if end_date:
+        paid_statement = paid_statement.where(ServiceRecord.service_date <= end_date)
+        pending_statement = pending_statement.where(ServiceRecord.service_date <= end_date)
+        expense_statement = expense_statement.where(Expense.expense_date <= end_date)
+
+    paid_records = session.exec(paid_statement).all()
+    pending_records = session.exec(pending_statement).all()
+    expenses = session.exec(expense_statement).all()
 
     clients_count = len(
         session.exec(

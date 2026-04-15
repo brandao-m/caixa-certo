@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from datetime import date
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 
 from app.core.dependencies import get_current_user
@@ -57,10 +59,23 @@ def create_service_record(
 
 @router.get("/", response_model=list[ServiceRecordResponse])
 def list_service_records(
+    start_date: date | None = Query(default=None),
+    end_date: date | None = Query(default=None),
+    payment_status: str | None = Query(default=None),
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     statement = select(ServiceRecord).where(ServiceRecord.user_id == current_user.id)
+
+    if start_date:
+        statement = statement.where(ServiceRecord.service_date >= start_date)
+
+    if end_date:
+        statement = statement.where(ServiceRecord.service_date <= end_date)
+
+    if payment_status:
+        statement = statement.where(ServiceRecord.payment_status == payment_status)
+
     records = session.exec(statement).all()
 
     return records
