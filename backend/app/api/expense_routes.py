@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select
 
 from app.core.dependencies import get_current_user
 from app.db.session import get_session
 from app.models.expense import Expense
 from app.models.user import User
-from app.schemas.expense import ExpenseCreate, ExpenseResponse
+from app.schemas.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
 
 router = APIRouter(prefix="/expenses", tags=["Expenses"])
 
@@ -58,3 +58,52 @@ def get_expense(
         raise HTTPException(status_code=404, detail="Despesa não encontrada.")
 
     return expense
+
+
+@router.put("/{expense_id}", response_model=ExpenseResponse)
+def update_expense(
+    expense_id: int,
+    expense_data: ExpenseUpdate,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    statement = select(Expense).where(
+        Expense.id == expense_id,
+        Expense.user_id == current_user.id,
+    )
+    expense = session.exec(statement).first()
+
+    if not expense:
+        raise HTTPException(status_code=404, detail="Despesa não encontrada.")
+
+    expense.description = expense_data.description
+    expense.amount = expense_data.amount
+    expense.expense_date = expense_data.expense_date
+    expense.category = expense_data.category
+
+    session.add(expense)
+    session.commit()
+    session.refresh(expense)
+
+    return expense
+
+
+@router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_expense(
+    expense_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    statement = select(Expense).where(
+        Expense.id == expense_id,
+        Expense.user_id == current_user.id,
+    )
+    expense = session.exec(statement).first()
+
+    if not expense:
+        raise HTTPException(status_code=404, detail="Despesa não encontrada.")
+
+    session.delete(expense)
+    session.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

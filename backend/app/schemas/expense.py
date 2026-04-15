@@ -11,6 +11,13 @@ class ExpenseCreate(SQLModel):
     category: Optional[str] = Field(default=None, max_length=100)
 
 
+class ExpenseUpdate(SQLModel):
+    description: str = Field(max_length=255)
+    amount: float = Field(ge=0)
+    expense_date: date
+    category: Optional[str] = Field(default=None, max_length=100)
+
+
 class ExpenseResponse(SQLModel):
     id: int
     description: str
