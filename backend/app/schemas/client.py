@@ -11,6 +11,13 @@ class ClientCreate(SQLModel):
     notes: Optional[str] = Field(default=None, max_length=500)
 
 
+class ClientUpdate(SQLModel):
+    full_name: str = Field(max_length=255)
+    email: Optional[str] = Field(default=None, max_length=255)
+    phone: Optional[str] = Field(default=None, max_length=20)
+    notes: Optional[str] = Field(default=None, max_length=500)
+
+
 class ClientResponse(SQLModel):
     id: int
     full_name: str
