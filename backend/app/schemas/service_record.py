@@ -13,6 +13,15 @@ class ServiceRecordCreate(SQLModel):
     service_id: int
 
 
+class ServiceRecordUpdate(SQLModel):
+    description: Optional[str] = Field(default=None, max_length=500)
+    service_date: date
+    amount: float = Field(ge=0)
+    payment_status: Literal['pendente', 'pago'] = 'pendente'
+    client_id: int
+    service_id: int
+
+
 class ServiceRecordResponse(SQLModel):
     id: int
     description: Optional[str]

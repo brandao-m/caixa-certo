@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from app.core.dependencies import get_current_user
@@ -9,7 +9,11 @@ from app.models.client import Client
 from app.models.service import Service
 from app.models.service_record import ServiceRecord
 from app.models.user import User
-from app.schemas.service_record import ServiceRecordCreate, ServiceRecordResponse
+from app.schemas.service_record import (
+    ServiceRecordCreate,
+    ServiceRecordResponse,
+    ServiceRecordUpdate,
+)
 
 router = APIRouter(prefix="/service-records", tags=["Service Records"])
 
@@ -97,3 +101,74 @@ def get_service_record(
         raise HTTPException(status_code=404, detail="Lançamento não encontrado.")
 
     return record
+
+
+@router.put("/{record_id}", response_model=ServiceRecordResponse)
+def update_service_record(
+    record_id: int,
+    record_data: ServiceRecordUpdate,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    statement = select(ServiceRecord).where(
+        ServiceRecord.id == record_id,
+        ServiceRecord.user_id == current_user.id,
+    )
+    record = session.exec(statement).first()
+
+    if not record:
+        raise HTTPException(status_code=404, detail="Lançamento não encontrado.")
+
+    client = session.exec(
+        select(Client).where(
+            Client.id == record_data.client_id,
+            Client.user_id == current_user.id,
+        )
+    ).first()
+
+    if not client:
+        raise HTTPException(status_code=404, detail="Cliente não encontrado.")
+
+    service = session.exec(
+        select(Service).where(
+            Service.id == record_data.service_id,
+            Service.user_id == current_user.id,
+        )
+    ).first()
+
+    if not service:
+        raise HTTPException(status_code=404, detail="Serviço não encontrado.")
+
+    record.description = record_data.description
+    record.service_date = record_data.service_date
+    record.amount = record_data.amount
+    record.payment_status = record_data.payment_status
+    record.client_id = record_data.client_id
+    record.service_id = record_data.service_id
+
+    session.add(record)
+    session.commit()
+    session.refresh(record)
+
+    return record
+
+
+@router.delete("/{record_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_service_record(
+    record_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    statement = select(ServiceRecord).where(
+        ServiceRecord.id == record_id,
+        ServiceRecord.user_id == current_user.id,
+    )
+    record = session.exec(statement).first()
+
+    if not record:
+        raise HTTPException(status_code=404, detail="Lançamento não encontrado.")
+
+    session.delete(record)
+    session.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
