@@ -19,22 +19,25 @@ function AppLayout() {
   const navItemClass = (path) =>
     `block rounded-xl px-4 py-3 text-sm font-medium transition ${
       isActive(path)
-        ? "bg-gray-900 text-white"
-        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent"
     }`;
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="flex min-h-screen">
-        <aside className="hidden w-72 flex-col border-r border-gray-200 bg-white p-6 lg:flex">
+        <aside className="hidden w-72 flex-col border-r border-slate-200 bg-white p-6 lg:flex">
           <div>
-            <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">
+            <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
               CaixaCerto
             </span>
 
-            <h1 className="mt-4 text-2xl font-bold">Painel financeiro</h1>
-            <p className="mt-2 text-sm text-gray-500">
-              Sistema para controle financeiro de autônomos.
+            <h1 className="mt-5 text-2xl font-bold tracking-tight">
+              Painel financeiro
+            </h1>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Controle clientes, serviços, lançamentos e despesas.
             </p>
           </div>
 
@@ -59,17 +62,17 @@ function AppLayout() {
             </Link>
           </nav>
 
-          <div className="mt-auto rounded-2xl border border-gray-200 bg-gray-50 p-4">
-            <p className="text-sm font-medium text-gray-900">
+          <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-sm font-medium text-slate-900">
               {user?.full_name || "Usuário"}
             </p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-slate-500">
               {user?.email || "sem e-mail"}
             </p>
 
             <button
               onClick={handleLogout}
-              className="mt-4 w-full rounded-xl bg-gray-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+              className="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
             >
               Sair
             </button>
@@ -77,18 +80,18 @@ function AppLayout() {
         </aside>
 
         <div className="flex min-h-screen flex-1 flex-col">
-          <header className="border-b border-gray-200 bg-white px-6 py-4">
+          <header className="border-b border-slate-200 bg-white px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Bem-vindo de volta,</p>
-                <h2 className="text-xl font-semibold text-gray-900">
+                <p className="text-sm text-slate-500">Bem-vindo de volta,</p>
+                <h2 className="text-xl font-semibold text-slate-900">
                   {user?.full_name || "Usuário"}
                 </h2>
               </div>
 
               <button
                 onClick={handleLogout}
-                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 lg:hidden"
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 lg:hidden"
               >
                 Sair
               </button>

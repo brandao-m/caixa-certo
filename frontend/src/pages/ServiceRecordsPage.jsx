@@ -145,7 +145,7 @@ function ServiceRecordsPage() {
 
           <button
             type="submit"
-            className="rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+            className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
           >
             Filtrar
           </button>
@@ -264,7 +264,7 @@ function ServiceRecordsPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-xl bg-gray-900 px-4 py-3 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-70"
+              className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? "Salvando..." : "Cadastrar lançamento"}
             </button>
