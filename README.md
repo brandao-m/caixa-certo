@@ -3,6 +3,7 @@ Sistema financeiro para autônomos, desenvolvido para ajudar profissionais a con
 
 ## Sobre o projeto
 O **CaixaCerto** foi criado como uma aplicação full stack com foco em organização financeira e operacional para profissionais autônomos.  
+
 A proposta do sistema é centralizar o controle do negócio em uma interface simples, clara e prática, permitindo acompanhar atendimentos, pagamentos, gastos e visão geral do desempenho financeiro.
 
 ## Screenshots
@@ -143,5 +144,5 @@ npm run dev
 - GET /expenses/
 
 ### Autor
-Marcus Brandão 
+Marcus Brandão ->
 GitHub: @brandao-m
