@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import ProtectedRoute from "../components/ProtectedRoute";
+import AppLayout from "../layouts/AppLayout";
 import ClientsPage from "../pages/ClientsPage";
 import DashboardPage from "../pages/DashboardPage";
 import ExpensesPage from "../pages/ExpensesPage";
@@ -14,46 +15,20 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<LoginPage />} />
+
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <AppLayout />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/clients"
-          element={
-            <ProtectedRoute>
-              <ClientsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/services"
-          element={
-            <ProtectedRoute>
-              <ServicesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/service-records"
-          element={
-            <ProtectedRoute>
-              <ServiceRecordsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/expenses"
-          element={
-            <ProtectedRoute>
-              <ExpensesPage />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/clients" element={<ClientsPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/service-records" element={<ServiceRecordsPage />} />
+          <Route path="/expenses" element={<ExpensesPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
